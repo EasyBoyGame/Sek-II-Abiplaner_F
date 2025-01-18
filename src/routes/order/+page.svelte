@@ -17,7 +17,7 @@
         };
 
         try {
-            const response = await fetch('http://localhost:8080/api/v1/bestellung', {
+            const response = await fetch('/api/v1/bestellung', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
