@@ -24,7 +24,7 @@
 
   async function getOrders() {
     try {
-      const data = await fetch("http://localhost:8080/api/v1/bestellung");
+      const data = await fetch("/api/v1/bestellung");
       if (!data.ok) {
         throw new Error(`Error: ${data.status} ${data.statusText}`);
       }
@@ -68,7 +68,7 @@
      */
   async function handleSubmit(string) {
     try {
-      const response = await fetch("http://localhost:8080/api/v1/bestellung", {
+      const response = await fetch("/api/v1/bestellung", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

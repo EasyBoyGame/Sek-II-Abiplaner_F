@@ -1,9 +1,11 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
     import { neuerPreis } from '$lib/stores/dataStore';
-	import { Button, Col, Row, Navbar, NavbarBrand, Container } from '@sveltestrap/sveltestrap';
+	import { Col, Row, Navbar, NavbarBrand, Container } from '@sveltestrap/sveltestrap';
+	import { Button, Modal} from 'flowbite-svelte';
 
 	let antwort;
+	let defaultModal = false;
 
 	async function handleSubmit() {
         const payload = {
@@ -27,7 +29,7 @@
 			if (response.ok) {
 				antwort = await response.json();
 				neuerPreis.set(antwort);
-				goto('/checkout');
+				//goto('/checkout'); // beim Testlauf deaktiviert
             } else {
                 const error = await response.json();
                 alert(`Fehler: ${error.message}`);
@@ -102,18 +104,27 @@
 		<div class="text-center mt-4">
 			<h6 style="padding-bottom: 0.5rem;">Gesamtbetrag:</h6>
 			<input style="margin-bottom: 10px;" type="svelte-currency-input" class="form-control" id="gesamtbetrag" disabled={true} placeholder="{result},00 €" />
-			<button type="submit" class="btn btn-primary mb-3" on:click={handleSubmit}>Jetzt vorbestellen!</button>
+			<!--<button type="submit" class="btn btn-primary mb-3" on:click={handleSubmit}>Jetzt vorbestellen!</button>-->
+			<button type="submit" class="btn btn-primary mb-3" on:click={handleSubmit} on:click={() => defaultModal=true}>Jetzt vorbestellen!</button>
+			<Modal title="Erfolgreich" bind:open={defaultModal} autoclose outsideclose>
+				<p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">Ihre Karten wurden erfolgreich vorbestellt!</p>
+				<svelte:fragment slot="footer">
+    				<Button color="red" on:click={() => goto('/')}>Abmelden</Button>
+					<Button color="alternative">Zurück</Button>
+  				</svelte:fragment>
+			</Modal>
 		</div>
 	</div>
 	
 
-	
-	<div class="bottom-fixed">
-		<p style="text-align: center; padding: 1rem;">
-			Die Anzahl an gewünschten Karten kann bis zur Überweisung des fälligen Betrags geändert werden.<br />
+	<div class="spacer"></div>
+
+    <footer class="bottom-fixed">
+        <p style="text-align: center; padding: 1rem;">
+            Die Anzahl an gewünschten Karten kann bis zur Überweisung des fälligen Betrags geändert werden.<br />
 			Bei Bestellungen von über neun Karten, bitte Kontakt mit dem Finanzkomittee aufnehmen.
-		</p>
-	</div>
+        </p>
+    </footer>
 </div>
 
 
@@ -153,16 +164,15 @@
 		background-color: #f9f9f9;
 	}
 
-	/* Bottom Fixed Bar Styling */
 	.bottom-fixed {
-		position: fixed;
-		bottom: 0;
-		left: 0;
-		width: 100%;
-		background-color: #f1f1f1;
-		text-align: center;
-		padding: 10px;
-		z-index: 1000; /* Ensures it appears above other content */
+        background-color: #f1f1f1;
+        text-align: center;
+        padding: 10px;
+        z-index: 1000; /* Ensures it appears above other content */
+    }
+
+	.spacer{
+		height: 50px;
 	}
 
 	/* Remove Spinner Buttons and Style Number Inputs */
