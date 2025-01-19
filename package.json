@@ -8,12 +8,15 @@
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"lint": "eslint ."
+		"lint": "eslint .",
+		"openapi-ts": "openapi-ts"
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^5.0.0",
+		"@hey-api/openapi-ts": "^0.62.1",
 		"@neoconfetti/svelte": "^2.0.0",
 		"@sveltejs/adapter-auto": "^3.0.0",
+		"@sveltejs/adapter-static": "^3.0.8",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
 		"@types/eslint": "^9.6.0",
@@ -33,7 +36,9 @@
 		"vite": "^5.0.3"
 	},
 	"dependencies": {
+		"@hey-api/client-fetch": "^0.7.0",
 		"@sveltestrap/sveltestrap": "^6.2.7",
+		"oidc-client-ts": "^3.1.0",
 		"simple-datatables": "^9.2.1",
 		"svelte-navbar": "^0.0.122"
 	}

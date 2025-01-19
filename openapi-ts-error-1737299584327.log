@@ -1,0 +1,11 @@
+Error requesting http://127.0.0.1:8080/q/openapi 
+HTTP ERROR 500
+ResolverError: Error requesting http://127.0.0.1:8080/q/openapi 
+HTTP ERROR 500
+    at Object.sendRequest (D:\Dokumente\VSCode\AbiplanerWEB\node_modules\@hey-api\json-schema-ref-parser\dist\lib\resolvers\url.js:39:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async bf (D:\Dokumente\VSCode\AbiplanerWEB\node_modules\@hey-api\openapi-ts\dist\index.cjs:1311:8070)
+    at async n (D:\Dokumente\VSCode\AbiplanerWEB\node_modules\@hey-api\openapi-ts\dist\index.cjs:1311:10300)
+    at async Promise.all (index 0)
+    at async mA (D:\Dokumente\VSCode\AbiplanerWEB\node_modules\@hey-api\openapi-ts\dist\index.cjs:1311:11133)
+    at async start (D:\Dokumente\VSCode\AbiplanerWEB\node_modules\@hey-api\openapi-ts\bin\index.cjs:113:21)

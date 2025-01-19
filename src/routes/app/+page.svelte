@@ -1,44 +1,26 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
+    import { logout } from '$lib/auth';
+    import { postApiV1Bestellung } from '$lib/client';
     import { neuerPreis } from '$lib/stores/dataStore';
 	import { Col, Row, Navbar, NavbarBrand, Container } from '@sveltestrap/sveltestrap';
-	import { Button, Modal} from 'flowbite-svelte';
+	import { Button, Modal, Footer} from 'flowbite-svelte';
 
 	let antwort;
 	let defaultModal = false;
+	let anzahlEssenskarte = 0;
+	let anzahlAbendkarte = 0;
+	let bezahlt = false;
 
-	async function handleSubmit() {
-        const payload = {
-			benutzerId,
-			benutzerEmail,
-            anzahlEssenskarte,
-            anzahlAbendkarte,
-			bezahlt
-        };
+	async function handleSubmit(){
+		const {data, response} = await postApiV1Bestellung({
+			body: {anzahlEssenskarten:anzahlEssenskarte, anzahlAbendkarten:anzahlAbendkarte}
+		})
+		if(response.ok){
+			defaultModal = true;
+		}
+	}
 
-        try {
-            const response = await fetch('/api/v1/bestellung', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            });
-
-
-			if (response.ok) {
-				antwort = await response.json();
-				neuerPreis.set(antwort);
-				//goto('/checkout'); // beim Testlauf deaktiviert
-            } else {
-                const error = await response.json();
-                alert(`Fehler: ${error.message}`);
-            }            
-        } catch (error) {
-            console.error('Error while submitting order:', error);
-            alert('Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.');
-        }
-    }
 
 	function handleInput(e: Event){
 		const event = e as InputEvent;
@@ -50,30 +32,32 @@
 		} else{
 			target.value = value.replace(/[^0-9]/g, '');
 		}
-		
 	}
 
-	let benutzerId = "501220";
-	let benutzerEmail = "tahir.catalkaya@jsg-vechelde.de";
-	let anzahlEssenskarte = 0;
-	let anzahlAbendkarte = 0;
-	let bezahlt = false;
+
+	async function logoutProcedure(){
+		await logout();
+		goto('/');
+	}
+
+	
 	
 	$: if (anzahlEssenskarte > 9) anzahlEssenskarte = 9; 			// beschränkt Anzahl auf 9
 	$: if (anzahlAbendkarte > 9) anzahlAbendkarte = 9; 				// beschränkt Anzahl auf 9
 	$: result = anzahlEssenskarte * 50 + anzahlAbendkarte * 20;		// summiert Gesamtbetrag der Karten
 </script>
 
-<!--mit Fatih: korrekte Formatierung der Seite bei kleineren Bildschirmen-->
 
-<div style="display: contents">
+
+<div class="page-wrapper">
 	<Navbar class="container-fluid" container="fluid" color="info" dark={false} expand="md" fixed="padding-top" theme="auto">
 		<NavbarBrand href="/">
 			<span class="test" style="font-size: 20px; margin: auto;">Abiball 2025 - Karten vorbestellen</span>
 		</NavbarBrand>
+		<Button color="red" onclick={logoutProcedure}>Abmelden</Button>
 	</Navbar>
 
-	<div class="container mt-5" >
+	<div class="container mt-5 content" >
 		<div class="card-wrapper">
 			<div class="card-container ">
 				<h3 style="text-align: center;">Essenskarte</h3>
@@ -82,7 +66,7 @@
 					- Eintritt ab 18:00 Uhr
 				</p>
 				<label for="anzahlEssenkarten">Anzahl Karten:</label>
-				<input type="number" class="form-control" bind:value={anzahlEssenskarte} on:input={handleInput} placeholder="0-9"/>
+				<input type="number" class="form-control" bind:value={anzahlEssenskarte} oninput={handleInput} placeholder="0-9"/>
 			</div>
 
 			<div class="card-container">
@@ -92,31 +76,28 @@
 					- Eintritt ab 22:00 Uhr
 				</p>
 				<label for="anzahlAbendkarten">Anzahl Karten:</label>
-				<input type="number" class="form-control" bind:value={anzahlAbendkarte} on:input={handleInput} placeholder="0-9"/>
+				<input type="number" class="form-control" bind:value={anzahlAbendkarte} oninput={handleInput} placeholder="0-9"/>
+			</div>
+		</div>
+
+		<!--Gesamtbetrag für gewuenschte Anzahl an Karten berechnen + Feld fehlen-->
+		<div class="container mt-3 card-container" style="width: fit-content;">
+			<div class="text-center mt-4">
+				<h6 style="padding-bottom: 0.5rem;">Gesamtbetrag:</h6>
+				<input style="margin-bottom: 10px;" type="svelte-currency-input" class="form-control" id="gesamtbetrag" disabled={true} placeholder="{result},00 €" />
+				<!--<button type="submit" class="btn btn-primary mb-3" on:click={handleSubmit}>Jetzt vorbestellen!</button>-->
+				<button type="submit" class="btn btn-primary mb-3" onclick={handleSubmit} >Jetzt vorbestellen!</button>
+				<Modal title="Erfolgreich" bind:open={defaultModal} autoclose outsideclose>
+					<p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">Ihre Karten wurden erfolgreich vorbestellt!</p>
+					<svelte:fragment slot="footer">
+	    				<Button color="red" onclick={logoutProcedure}>Abmelden</Button>
+						<Button color="alternative">Zurück</Button>
+  					</svelte:fragment>
+				</Modal>
 			</div>
 		</div>
 	</div>
-
-
-
-	<!--Gesamtbetrag für gewuenschte Anzahl an Karten berechnen + Feld fehlen-->
-	<div class="container mt-3 card-container" style="width: fit-content;">
-		<div class="text-center mt-4">
-			<h6 style="padding-bottom: 0.5rem;">Gesamtbetrag:</h6>
-			<input style="margin-bottom: 10px;" type="svelte-currency-input" class="form-control" id="gesamtbetrag" disabled={true} placeholder="{result},00 €" />
-			<!--<button type="submit" class="btn btn-primary mb-3" on:click={handleSubmit}>Jetzt vorbestellen!</button>-->
-			<button type="submit" class="btn btn-primary mb-3" on:click={handleSubmit} on:click={() => defaultModal=true}>Jetzt vorbestellen!</button>
-			<Modal title="Erfolgreich" bind:open={defaultModal} autoclose outsideclose>
-				<p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">Ihre Karten wurden erfolgreich vorbestellt!</p>
-				<svelte:fragment slot="footer">
-    				<Button color="red" on:click={() => goto('/')}>Abmelden</Button>
-					<Button color="alternative">Zurück</Button>
-  				</svelte:fragment>
-			</Modal>
-		</div>
-	</div>
 	
-
 	<div class="spacer"></div>
 
     <footer class="bottom-fixed">
@@ -125,6 +106,7 @@
 			Bei Bestellungen von über neun Karten, bitte Kontakt mit dem Finanzkomittee aufnehmen.
         </p>
     </footer>
+	
 </div>
 
 
@@ -134,16 +116,25 @@
 <style>
 	/* Responsive Design for Smaller Screens */
 	@media only screen and (max-width:600px) {
-		.test {
-			font-size: 20px;
-		}
-		.card-container {
-			flex: 1 1 100%;
-		}
 		.bottom-fixed {
 			padding: 5px;
-			font-size: 14px; /* Adjust font size for smaller screens */
+			font-size: 15px;
 		}
+    }
+	
+	html, body {
+        height: 100%;
+        margin: 0;
+    }
+	
+	.page-wrapper {
+    	display: flex;
+    	flex-direction: column;
+    	min-height: 100vh; /* Ensures the wrapper covers the whole viewport */
+	}
+
+	.content {
+    	flex: 1; /* Pushes the footer to the bottom */
 	}
 
 	/* Card Wrapper Styling */

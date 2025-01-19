@@ -1,15 +1,10 @@
 <script>
 	import { Button, Col, Row, Navbar, NavbarBrand, Container } from '@sveltestrap/sveltestrap';
-
-    function redirect(){
-        window.location.href = "https://abiplaner.hopto.org:2020/realms/iserv/broker/iserv-oidc/login?client_id=security-admin-console&tab_id=4jS7C6Fjw74&client_data=eyJydSI6Imh0dHBzOi8vYWJpcGxhbmVyLmhvcHRvLm9yZzoyMDIwL2FkbWluL2lzZXJ2L2NvbnNvbGUvIiwicnQiOiJjb2RlIiwicm0iOiJxdWVyeSIsInN0IjoiN2VkMWYwMDQtZjcxOC00ZWQ0LWFhZTItM2NlY2M0NTQyYjU4In0&session_code=GShgKvWB1U_MXH14XIHZ0gs77qSdipPsG_Pgx2N0ZdA";
-    }
-  </script>
-  
-  <!--mit Fatih: korrekte Formatierung der Seite bei kleineren Bildschirmen-->
+    import {login} from '$lib/auth';
+</script>
 
 
-  <div class="page-wrapper">
+<div class="page-wrapper">
     <Navbar class="container-fluid" container="fluid" color="info" dark={false} expand="md" fixed="padding-top" theme="auto">
         <NavbarBrand href="/">
             <span class="test" style="font-size: 20px; margin: auto;">Abiball 2025 - Karten vorbestellen</span>
@@ -23,7 +18,7 @@
                     <p style="text-align: center; margin-bottom: 20px;">Willkommen auf der offiziellen Seite des Abiturjahrgangs 2025 des Julius-Spiegelberg-Gymnasiums! <br>
                         Nach der erfolgreichen Anmeldung mit ihrem IServ Konto, können Sie Karten für den Abiball vorbestellen.
                     </p>
-                    <button type="button" class="btn btn-primary mb-3" on:click="{redirect}">Login mit IServ</button>
+                    <button type="button" class="btn btn-primary mb-3" onclick={login}>Login mit IServ</button>
                 </div>
             </div>
         </div>

@@ -1,4 +1,6 @@
-<script>
+<script lang="ts">
+    import { getRoles } from "$lib/auth";
+    import { getApiV1Bestellung, patchApiV1Bestellung, type Bestellung } from "$lib/client";
   import {
     Table,
     TableBody,
@@ -8,15 +10,14 @@
     TableBodyCell,
     Checkbox,
     Button,
-    GradientButton,
-  } from "flowbite-svelte";
+    } from "flowbite-svelte";
   import { onMount } from "svelte";
 
   //#region load order
   /**
    * @type {any[]}
    */
-  let items = [];
+  let items = $state<Bestellung[]>([]);
 
   let totalEK = 0;
   let totalAK = 0;
@@ -24,11 +25,11 @@
 
   async function getOrders() {
     try {
-      const data = await fetch("/api/v1/bestellung");
-      if (!data.ok) {
-        throw new Error(`Error: ${data.status} ${data.statusText}`);
+      const {data, response} = await getApiV1Bestellung();
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
       }
-      items = await data.json();
+      items = data!;
     } catch (error) {
       console.error("Failed to fetch orders:", error);
     }
@@ -39,47 +40,28 @@
   });
 
   function countAmount() {
-    totalEK = items.reduce((sum, item) => sum + item.anzahlEssenskarte, 0);
-    totalAK = items.reduce((sum, item) => sum + item.anzahlAbendkarte, 0);
+    totalEK = items.reduce((sum, item) => sum + item.anzahlEssenskarte!, 0);
+    totalAK = items.reduce((sum, item) => sum + item.anzahlAbendkarte!, 0);
     totalProfit = items.reduce(
       (sum, item) =>
-        sum + item.anzahlEssenskarte * 50 + item.anzahlAbendkarte * 20,
+        sum + item.anzahlEssenskarte! * 50 + item.anzahlAbendkarte! * 20,
       0,
     );
   }
   //#endregion
 
-  
 
-  function saveState() {
-    for(let i = 0; i < items.length; i++){
-      let jsonData = JSON.stringify(items[i], null, 2);
-      handleSubmit(jsonData);
-    }
-    console.log("Data exported as JSON number");
-
-    alert("Änderungen erfolgreich gespeichert!")
-    window.location.reload();
-  }
-
-  
-  /**
-     * @param {string} string
-     */
-  async function handleSubmit(string) {
+  async function onClick(bestellung:Bestellung) {
+    alert(JSON.stringify(bestellung));
     try {
-      const response = await fetch("/api/v1/bestellung", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: string,
-      });
-    } catch (error) {
-      console.error("Error while editing orders:", error);
-      alert(
-        "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
+      const {response} = await patchApiV1Bestellung(
+        {body:{id:bestellung.id, bezahlt:bestellung.bezahlt}}
       );
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error("Failed to patch orders:", error);
     }
   }
 
@@ -87,9 +69,6 @@
 
 <div>
   {#if items.length > 0}
-  <div class="button">
-    <GradientButton id="saveBtn" color="red" on:click={saveState}>Save</GradientButton>
-  </div>
     {countAmount()}
     <Table
       {items}
@@ -99,7 +78,7 @@
       hoverable={true}
       placeholder="Search by E-Mail"
       filter={(item, searchTerm) =>
-        item.benutzerEmail.toLowerCase().includes(searchTerm.toLowerCase())}
+        item.benutzerEmail!.toLowerCase().includes(searchTerm.toLowerCase())}
     >
       <TableHead>
         <TableHeadCell
@@ -129,7 +108,7 @@
           <TableBodyCell>{item.anzahlEssenskarte}</TableBodyCell>
           <TableBodyCell>{item.anzahlAbendkarte}</TableBodyCell>
           <TableBodyCell>
-            <Checkbox bind:checked={item.bezahlt}></Checkbox>
+            <Checkbox bind:checked={item.bezahlt} on:change={() => onClick(item)}></Checkbox>
           </TableBodyCell>
           <TableBodyCell>{item.id}</TableBodyCell>
           <TableBodyCell>{item.benutzerId}</TableBodyCell>
