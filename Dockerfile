@@ -1,22 +1,14 @@
-FROM node:22 AS build
-
+FROM node:lts AS builder
 WORKDIR /app
-
-COPY package*.json .
-
-RUN npm ci
 
 COPY . .
+
+RUN npm ci
 RUN npm run build
-RUN npm prune --production
 
-FROM node:22 AS run
+FROM docker.io/library/nginx:stable-alpine-slim as runner
 
-ENV NODE_ENV=production
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
 
-WORKDIR /app
-COPY --from=build /app/build ./build
-COPY --from=build /app/package.json ./package.json
-COPY --from=build /app/node_modules ./node_modules
-RUN ulimit -c unlimited
-ENTRYPOINT ["node", "build"]
+EXPOSE 3000
