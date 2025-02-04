@@ -6,7 +6,8 @@
 	import { Col, Row, Navbar, NavbarBrand, Container } from '@sveltestrap/sveltestrap';
 	import { Button, Modal, Footer} from 'flowbite-svelte';
 
-	let antwort;
+	let status = "";
+	let antwort = "";
 	let defaultModal = false;
 	let anzahlEssenskarte = 0;
 	let anzahlAbendkarte = 0;
@@ -18,6 +19,13 @@
 		})
 		if(response.ok){
 			defaultModal = true;
+			status = "Erfolgreich";
+			antwort = "Ihre Karten wurden erfolgreich vorbestellt!"
+		}
+		else{
+			defaultModal = true;
+			status = "Fehlgeschlagen";
+			antwort = response.statusText;
 		}
 	}
 
@@ -59,7 +67,7 @@
 
 	<div class="container mt-5 content" >
 		<div class="card-wrapper">
-			<div class="card-container ">
+			<div class="card-container">
 				<h3 style="text-align: center;">Essenskarte</h3>
 				<p>
 					- Kartenpreis: 50€<br/>
@@ -87,8 +95,8 @@
 				<input style="margin-bottom: 10px;" type="svelte-currency-input" class="form-control" id="gesamtbetrag" disabled={true} placeholder="{result},00 €" />
 				<!--<button type="submit" class="btn btn-primary mb-3" on:click={handleSubmit}>Jetzt vorbestellen!</button>-->
 				<button type="submit" class="btn btn-primary mb-3" onclick={handleSubmit} >Jetzt vorbestellen!</button>
-				<Modal title="Erfolgreich" bind:open={defaultModal} autoclose outsideclose>
-					<p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">Ihre Karten wurden erfolgreich vorbestellt!</p>
+				<Modal title={status} bind:open={defaultModal} autoclose outsideclose>
+					<p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">{antwort}</p>
 					<svelte:fragment slot="footer">
 	    				<Button color="red" onclick={logoutProcedure}>Abmelden</Button>
 						<Button color="alternative">Zurück</Button>
@@ -102,7 +110,7 @@
 
     <footer class="bottom-fixed">
         <p style="text-align: center; padding: 1rem;">
-            Die Anzahl an gewünschten Karten kann bis zur Überweisung des fälligen Betrags geändert werden.<br />
+            Die Anzahl an gewünschten Karten kann bis zur Überweisung des fälligen Betrags geändert werden.<br/>
 			Bei Bestellungen von über neun Karten, bitte Kontakt mit dem Finanzkomittee aufnehmen.
         </p>
     </footer>
