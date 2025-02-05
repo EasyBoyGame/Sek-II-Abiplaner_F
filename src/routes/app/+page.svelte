@@ -25,7 +25,7 @@
 		else{
 			defaultModal = true;
 			status = "Fehlgeschlagen";
-			antwort = response.statusText;
+			antwort = "Die gewünschte Anzahl an Karten ist leider nicht mehr verfügbar.\nBitte Kontakt mit dem Finanzkomitee aufnehmen!";
 		}
 	}
 
