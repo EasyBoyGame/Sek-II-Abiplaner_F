@@ -24,7 +24,7 @@
     			goto('/checkin/failure');
 		    }
         } catch(error){
-            goto('/failure')
+            goto('/checkin/failure')
         } finally{
             loading =false;
         }
