@@ -18,13 +18,16 @@
             path: { kartenNr }
             })
 		    if(response.ok){
-    			goto('/checkin/success');
+                message = "ERFOLGREICH";
+    			//goto('/checkin/success');
 		    }
 		    else{
-    			goto('/checkin/failure');
+                message = "UNGÜLTIG";
+    			//goto('/checkin/failure');
 		    }
         } catch(error){
-            goto('/checkin/failure')
+            message = "FEHLGESCHLAGEN";
+            //goto('/checkin/failure')
         } finally{
             loading =false;
         }
