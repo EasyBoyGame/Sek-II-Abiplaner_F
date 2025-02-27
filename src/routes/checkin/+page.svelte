@@ -18,10 +18,10 @@
             path: { kartenNr }
             })
 		    if(response.ok){
-    			goto('/success');
+    			goto('/checkin/success');
 		    }
 		    else{
-    			goto('/failure');
+    			goto('/checkin/failure');
 		    }
         } catch(error){
             goto('/failure')
