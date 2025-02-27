@@ -2,6 +2,7 @@
     import { onMount } from "svelte";
     import { page } from "$app/state";
     import { postApiV1CheckinByKartenNr, type Bestellung } from "$lib/client";
+    import { goto } from "$app/navigation";
     
 
     let message = "Einchecken...";
@@ -17,13 +18,13 @@
             path: { kartenNr }
             })
 		    if(response.ok){
-    			message = "✅ Check-in erfolgreich!";
+    			goto('/success');
 		    }
 		    else{
-    			message = "❌ Check-in fehlgeschlagen.";
+    			goto('/failure');
 		    }
         } catch(error){
-            message = "⚠️ Check-in fehlgeschlagen.";
+            goto('/failure')
         } finally{
             loading =false;
         }
