@@ -34,6 +34,7 @@
 	}
 
     $effect(() =>{
+        
         const url = new URL(page.url);
         const kartenNr = url.searchParams.get("kartenNr");
         if(kartenNr){
@@ -43,14 +44,6 @@
             message = "⚠️ Keine KartenNr gefunden in der URL!";
         }
     });
-
-
-    onMount(() => {
-    let params = new URL(document.location.toString()).searchParams;
-    let kartenNr = params.get("kartenNr");
-
-    //handleSubmit(kartenNr);
-  });
 </script>
 
 <!-- UI Feedback -->
