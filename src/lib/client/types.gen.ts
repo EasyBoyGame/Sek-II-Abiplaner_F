@@ -132,6 +132,22 @@ export type PostApiV1CheckinByKartenNrResponses = {
     201: unknown;
 };
 
+export type GetApiV1CheckinStatusData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/checkin-status';
+};
+
+export type GetApiV1CheckinStatusResponses = {
+    /**
+     * OK
+     */
+    200: string;
+};
+
+export type GetApiV1CheckinStatusResponse = GetApiV1CheckinStatusResponses[keyof GetApiV1CheckinStatusResponses];
+
 export type GetApiV1LoginData = {
     body?: never;
     path?: never;
