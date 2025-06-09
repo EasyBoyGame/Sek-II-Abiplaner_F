@@ -117,12 +117,12 @@ export type DeleteApiV1BestellungByBestellungIdResponses = {
 export type DeleteApiV1BestellungByBestellungIdResponse = DeleteApiV1BestellungByBestellungIdResponses[keyof DeleteApiV1BestellungByBestellungIdResponses];
 
 export type PostApiV1CheckinByKartenNrData = {
-    body?: never;
-    path: {
+    body: {
         kartenNr: string;
     };
+    path?: never;
     query?: never;
-    url: '/api/v1/checkin/{kartenNr}';
+    url: '/api/v1/checkin';
 };
 
 export type PostApiV1CheckinByKartenNrResponses = {

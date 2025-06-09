@@ -58,8 +58,12 @@ export const deleteApiV1BestellungByBestellungId = <ThrowOnError extends boolean
  */
 export const postApiV1CheckinByKartenNr = <ThrowOnError extends boolean = false>(options: Options<PostApiV1CheckinByKartenNrData, ThrowOnError>) => {
     return (options?.client ?? client).post<unknown, unknown, ThrowOnError>({
-        url: '/api/v1/checkin/{kartenNr}',
-        ...options
+        url: '/api/v1/checkin',
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            ...options?.headers
+        }
     });
 };
 
