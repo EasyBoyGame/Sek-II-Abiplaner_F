@@ -9,12 +9,8 @@
     if (!kartenNr) return;
 
     try {
-      const response = await fetch('/api/v1/checkin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ kartenNr })
+      const response = await fetch(`/api/v1/checkin?kartenNr=${encodeURIComponent(kartenNr)}`, {
+        method: 'POST'
       });
 
       if (response.status === 200) {
