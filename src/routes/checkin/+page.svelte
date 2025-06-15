@@ -14,7 +14,8 @@
       });
 
       if (response.status === 200) {
-        goto('/checkin/redirect?status=success');
+        document.cookie = 'checkinStatus=success; Path=/; Max-Age=60';
+        goto('/checkin/success');
       } else if (response.status === 400 || response.status === 403) {
         goto('/checkin/failure');
       } else {
