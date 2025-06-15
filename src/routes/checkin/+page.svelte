@@ -14,7 +14,7 @@
       });
 
       if (response.status === 200) {
-        goto('/checkin/success');
+        goto('/checkin/redirect?status=success');
       } else if (response.status === 400 || response.status === 403) {
         goto('/checkin/failure');
       } else {
