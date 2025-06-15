@@ -1,5 +1,33 @@
 <script lang="ts">
-  // No logic needed
+  import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
+
+  onMount(async () => {
+    const params = new URLSearchParams(window.location.search);
+    const kartenNr = params.get('kartenNr');
+
+    if (!kartenNr) return;
+
+    try {
+      const response = await fetch('/api/v1/checkin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ kartenNr })
+      });
+
+      if (response.status === 200) {
+        goto('/checkin/success');
+      } else if (response.status === 400 || response.status === 403) {
+        goto('/checkin/failure');
+      } else {
+        console.error('Unexpected response status:', response.status);
+      }
+    } catch (error) {
+      console.error('Check-in failed:', error);
+    }
+  });
 </script>
 
 <main class="p-4">
