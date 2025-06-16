@@ -1,16 +1,14 @@
-import { redirect } from '@sveltejs/kit';
-import type { ServerLoad } from '@sveltejs/kit';
+import { redirect, type ServerLoad } from '@sveltejs/kit';
 
 export const prerender = false;
 
-export const load: ServerLoad = async (event) => {
-  const status = event.cookies.get('checkinStatus');
+export const load: ServerLoad = async ({ request }) => {
+	const referer = request.headers.get('referer');
 
-  if (status !== 'success') {
-    // If the cookie isn't 'success', redirect back to /checkin
-    throw redirect(302, '/checkin');
-  }
+	// Allow access only if they came from the check-in page with kartenNr
+	if (!referer || !referer.includes('/checkin?kartenNr=')) {
+		throw redirect(302, '/checkin');
+	}
 
-  // Do not delete the cookie here so that it remains available on refresh
-  return { status };
+	return {};
 };
