@@ -1,17 +1,31 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
-	onMount(() => {
+	onMount(async () => {
 		const params = new URLSearchParams(window.location.search);
 		const kartenNr = params.get('kartenNr');
 
-		if (kartenNr) {
-			// Redirect via POST form to server-side handler
-			const form = document.createElement('form');
-			form.method = 'POST';
-			form.action = `/checkin/handle?kartenNr=${encodeURIComponent(kartenNr)}`;
-			document.body.appendChild(form);
-			form.submit();
+		if (!kartenNr) return;
+
+		try {
+			const response = await fetch(`/api/v1/checkin?kartenNr=${encodeURIComponent(kartenNr)}`, {
+				method: 'POST'
+			});
+
+			if (response.status === 200) {
+				document.cookie = 'checkinStatus=success; Path=/; Max-Age=60';
+				goto('/checkin/success');
+			} else if (response.status === 400 || response.status === 403) {
+				document.cookie = 'checkinStatus=failure; Path=/; Max-Age=60';
+				goto('/checkin/failure');
+			} else {
+				console.error('Unexpected response status:', response.status);
+			}
+		} catch (error) {
+			console.error('Check-in failed:', error);
+			document.cookie = 'checkinStatus=failure; Path=/; Max-Age=60';
+			goto('/checkin/failure');
 		}
 	});
 </script>
