@@ -1,40 +1,29 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
-  onMount(async () => {
-    const params = new URLSearchParams(window.location.search);
-    const kartenNr = params.get('kartenNr');
+	onMount(() => {
+		const params = new URLSearchParams(window.location.search);
+		const kartenNr = params.get('kartenNr');
 
-    if (!kartenNr) return;
-
-    try {
-      const response = await fetch(`/api/v1/checkin?kartenNr=${encodeURIComponent(kartenNr)}`, {
-        method: 'POST'
-      });
-
-      if (response.status === 200) {
-        document.cookie = 'checkinStatus=success; Path=/; Max-Age=60';
-        goto('/checkin/success');
-      } else if (response.status === 400 || response.status === 403) {
-        goto('/checkin/failure');
-      } else {
-        console.error('Unexpected response status:', response.status);
-      }
-    } catch (error) {
-      console.error('Check-in failed:', error);
-    }
-  });
+		if (kartenNr) {
+			// Redirect via POST form to server-side handler
+			const form = document.createElement('form');
+			form.method = 'POST';
+			form.action = `/checkin/handle?kartenNr=${encodeURIComponent(kartenNr)}`;
+			document.body.appendChild(form);
+			form.submit();
+		}
+	});
 </script>
 
 <main class="p-4">
-  <h1 class="text-2xl font-bold mb-4">This is checkin</h1>
+	<h1 class="text-2xl font-bold mb-4">This is checkin</h1>
 </main>
 
 <style>
-  main {
-    max-width: 600px;
-    margin: 2rem auto;
-    text-align: center;
-  }
+	main {
+		max-width: 600px;
+		margin: 2rem auto;
+		text-align: center;
+	}
 </style>
