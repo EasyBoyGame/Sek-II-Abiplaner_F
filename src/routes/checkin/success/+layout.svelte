@@ -1,17 +1,15 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
-import { redirect, type ServerLoad } from '@sveltejs/kit';
+	onMount(() => {
+		const referer = document.referrer;
 
-export const prerender = false;
-
-export const load: ServerLoad = async ({ request }) => {
-	const referer = request.headers.get('referer');
-
-	// Allow access only if they came from the check-in page with kartenNr
-	if (!referer || !referer.includes('/checkin?kartenNr=')) {
-		throw redirect(302, '/checkin');
-	}
-
-	return {};
-};
+		if (!referer.includes('/checkin?kartenNr=')) {
+			goto('/checkin');
+		}
+	});
 </script>
+
+<h1>✅ Check-in successful!</h1>
+<p>Welcome, enjoy the event 🎉</p>
