@@ -1,3 +1,5 @@
+<script lang="ts">
+
 import { redirect, type ServerLoad } from '@sveltejs/kit';
 
 export const prerender = false;
@@ -12,3 +14,4 @@ export const load: ServerLoad = async ({ request }) => {
 
 	return {};
 };
+</script>
