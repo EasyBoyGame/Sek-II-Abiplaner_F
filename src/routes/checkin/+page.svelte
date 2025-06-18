@@ -18,7 +18,7 @@
 
         if (response.status === 200) {
           status = "success";
-        } else if (response.status === 204) {
+        } else if (response.status === 204 || response.status === 400) {
           status = "failure";
         } else if (response.status === 503) {
           status = "earlyBird";
@@ -67,7 +67,7 @@
       <p>Bitte Administrator kontaktieren!</p>
     </div>
   {:else}
-    <h1 class="text-2xl font-bold">Checking QR code...</h1>
+    <h1 class="text-2xl font-bold">Kein QR code eingescannt...</h1>
   {/if}
 </main>
 
