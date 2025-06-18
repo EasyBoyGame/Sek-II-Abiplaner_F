@@ -6,7 +6,7 @@ export const prerender = false;
 export const load: ServerLoad = async (event) => {
   const status = event.cookies.get('checkinStatus');
 
-  if (status !== 'failure') {
+  if (status !== 'success') {
     // If the cookie isn't 'failure', redirect back to /checkin
     throw redirect(302, '/checkin');
   }

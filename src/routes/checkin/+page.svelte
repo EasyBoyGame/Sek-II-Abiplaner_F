@@ -1,12 +1,12 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
-  import { page } from "$app/stores";
-  import { get } from "svelte/store";
+  import { page } from "$app/state";
   import { postApiV1CheckinByKartenNr } from "$lib/client";
 
+  
   onMount(async () => {
-    const kartenNr = get(page).url.searchParams.get("kartenNr");
+    const kartenNr = page.url.searchParams.get('kartenNr');
 
     if (kartenNr) {
       try {
