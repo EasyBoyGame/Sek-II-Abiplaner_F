@@ -4,10 +4,10 @@
   import { postApiV1CheckinByKartenNr } from "$lib/client";
   import { get } from "svelte/store";
 
-  let status: 'idle' | 'success' | 'failure' = 'idle';
+  let status: "idle" | "success" | "failure" | "earlyBird" | "error" = "idle";
 
   onMount(async () => {
-    const kartenNr = get(page).url.searchParams.get('kartenNr');
+    const kartenNr = get(page).url.searchParams.get("kartenNr");
     console.log("kartenNr:", kartenNr);
 
     if (kartenNr) {
@@ -16,17 +16,60 @@
           body: { kartenNr },
         });
 
-        if (response.ok) {
-          status = 'success';
-        } else {
-          status = 'failure';
+        if (response.status === 200) {
+          status = "success";
+        } else if (response.status === 204) {
+          status = "failure";
+        } else if (response.status === 503) {
+          status = "earlyBird";
         }
       } catch (error) {
-        status = 'failure';
+        status = "error";
       }
     }
   });
 </script>
+
+<main class="p-4 flex justify-center items-center min-h-screen">
+  {#if status === "success"}
+    <div class="glowing-box success-border" role="alert" aria-live="polite">
+      <div class="icon-circle success-circle">
+        <svg viewBox="0 0 24 24">
+          <path class="path" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <h1>Erfolgreich!</h1>
+      <p>Viel Spaß beim Abiball</p>
+    </div>
+  {:else if status === "failure" || status === "earlyBird"}
+    <div class="glowing-box failure-border" role="alert" aria-live="polite">
+      <div class="icon-circle failure-circle">
+        <svg viewBox="0 0 24 24">
+          <path class="path" d="M6 6L18 18" />
+          <path class="path" d="M18 6L6 18" />
+        </svg>
+      </div>
+      <h1>Fehlgeschlagen</h1>
+      {#if status === "earlyBird"}
+        <p>Dies ist eine Abendkarte. Einlass erst ab <b>22:00 Uhr</b>!</p>
+      {:else}<p>Diese Karte ist nicht gütlig oder wurde bereits verwendet!</p>
+      {/if}
+    </div>
+  {:else if status === "error"}
+    <div class="glowing-box failure-border" role="alert" aria-live="polite">
+      <div class="icon-circle failure-circle">
+        <svg viewBox="0 0 24 24">
+          <path class="path" d="M6 6L18 18" />
+          <path class="path" d="M18 6L6 18" />
+        </svg>
+      </div>
+      <h1>Interner Fehler</h1>
+      <p>Bitte Administrator kontaktieren!</p>
+    </div>
+  {:else}
+    <h1 class="text-2xl font-bold">Checking QR code...</h1>
+  {/if}
+</main>
 
 <style>
   .glowing-box {
@@ -109,30 +152,3 @@
     margin-top: 0.5rem;
   }
 </style>
-
-<main class="p-4 flex justify-center items-center min-h-screen">
-  {#if status === 'success'}
-    <div class="glowing-box success-border" role="alert" aria-live="polite">
-      <div class="icon-circle success-circle">
-        <svg viewBox="0 0 24 24">
-          <path class="path" d="M5 13l4 4L19 7" />
-        </svg>
-      </div>
-      <h1>QR Code Scanned</h1>
-      <p>Successfully scanned the QR code.</p>
-    </div>
-  {:else if status === 'failure'}
-    <div class="glowing-box failure-border" role="alert" aria-live="polite">
-      <div class="icon-circle failure-circle">
-        <svg viewBox="0 0 24 24">
-          <path class="path" d="M6 6L18 18" />
-          <path class="path" d="M18 6L6 18" />
-        </svg>
-      </div>
-      <h1>QR Code Scan Failed</h1>
-      <p>Unable to scan the QR code. Please try again.</p>
-    </div>
-  {:else}
-    <h1 class="text-2xl font-bold">Checking QR code...</h1>
-  {/if}
-</main>
