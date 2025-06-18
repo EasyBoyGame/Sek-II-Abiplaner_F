@@ -52,7 +52,7 @@
       <h1>Fehlgeschlagen</h1>
       {#if status === "earlyBird"}
         <p>Dies ist eine Abendkarte. Einlass erst ab <b>22:00 Uhr</b>!</p>
-      {:else}<p>Diese Karte ist nicht gütlig oder wurde bereits verwendet!</p>
+      {:else}<p>Diese Karte ist nicht gültig oder wurde bereits verwendet!</p>
       {/if}
     </div>
   {:else if status === "error"}
