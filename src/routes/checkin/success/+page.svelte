@@ -2,12 +2,7 @@
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
 
-  onMount(() => {
-    const referer = document.referrer;
-    if (!referer.includes('/checkin')) {
-      goto('/checkin');
-    }
-  });
+
 </script>
 
 <h1>✅ Check-in successful!</h1>
