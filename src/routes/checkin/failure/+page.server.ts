@@ -1,6 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import type { ServerLoad } from '@sveltejs/kit';
-
+/*
 export const prerender = false;
 
 export const load: ServerLoad = async (event) => {
@@ -14,3 +14,5 @@ export const load: ServerLoad = async (event) => {
   // Do not delete the cookie here so that it remains available on refresh
   return { status };
 };
+
+*/

@@ -1,7 +1,8 @@
 import { redirect } from '@sveltejs/kit';
 import type { ServerLoad } from '@sveltejs/kit';
 
-export const prerender = false;
+/*
+export const prerender = true;
 
 export const load: ServerLoad = async (event) => {
   const status = event.cookies.get('checkinStatus');
@@ -14,3 +15,5 @@ export const load: ServerLoad = async (event) => {
   // Do not delete the cookie here so that it remains available on refresh
   return { status };
 };
+
+*/

@@ -8,6 +8,8 @@
   onMount(async () => {
     const kartenNr = page.url.searchParams.get('kartenNr');
 
+    console.log(kartenNr);
+
     if (kartenNr) {
       try {
         const { data, response } = await postApiV1CheckinByKartenNr({
