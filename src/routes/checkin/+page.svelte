@@ -41,7 +41,7 @@
       <h1>Erfolgreich!</h1>
       <p>Viel Spaß beim Abiball</p>
     </div>
-  {:else if status === "failure" || status === "earlyBird"}
+  {:else if status === "failure"}
     <div class="glowing-box failure-border" role="alert" aria-live="polite">
       <div class="icon-circle failure-circle">
         <svg viewBox="0 0 24 24">
@@ -50,10 +50,18 @@
         </svg>
       </div>
       <h1>Fehlgeschlagen</h1>
-      {#if status === "earlyBird"}
-        <p>Dies ist eine Abendkarte. Einlass erst ab <b>22:00 Uhr</b>!</p>
-      {:else}<p>Diese Karte ist nicht gültig oder wurde bereits verwendet!</p>
-      {/if}
+      <p>Diese Karte ist nicht gültig oder wurde bereits verwendet!</p>
+    </div>
+  {:else if status === "earlyBird"}
+    <div class="glowing-box earlyBird-border" role="alert" aria-live="polite">
+      <div class="icon-circle earlyBird-circle">
+        <svg viewBox="0 0 24 24">
+          <path class="path" d="M6 6L18 18" />
+          <path class="path" d="M18 6L6 18" />
+        </svg>
+      </div>
+      <h1>Fehlgeschlagen</h1>
+      <p>Dies ist eine Abendkarte. Einlass erst ab <b>22:00 Uhr</b>!</p>
     </div>
   {:else if status === "error"}
     <div class="glowing-box failure-border" role="alert" aria-live="polite">
@@ -117,6 +125,11 @@
     box-shadow: 0 0 1.5vw 0.6vw rgba(34, 197, 94, 0.6);
   }
 
+  .earlyBird-border {
+    border-color: #f97316;
+    box-shadow: 0 0 1.5vw 0.6vw rgba(249, 115, 22, 0.6);
+  }
+
   .failure-border {
     border-color: #ef4444;
     box-shadow: 0 0 1.5vw 0.6vw rgba(239, 68, 68, 0.6);
@@ -125,6 +138,11 @@
   .success-circle {
     background-color: #22c55e;
     box-shadow: 0 0 0.5vw 0.25vw rgba(34, 197, 94, 0.8);
+  }
+
+  .earlyBird-circle {
+    background-color: #f97316;
+    box-shadow: 0 0 0.5vw 0.25vw rgba(249, 115, 22, 0.8);
   }
 
   .failure-circle {
